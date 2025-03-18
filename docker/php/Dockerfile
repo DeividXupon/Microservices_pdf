@@ -1,21 +1,21 @@
 FROM php:7.4-fpm
 
 # Installing dependencies for Laravel to decompress Composer
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     bash \
     curl \
     libpng-dev \
     libzip-dev \
-    zlib-dev
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # PHP extensions
-RUN docker-php-ext-install \
-    && docker-php-ext-install zip
+RUN docker-php-ext-install zip
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN apk add --no-cache nodejs npm
+RUN apt-get update && apt-get install -y nodejs npm && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www
 
